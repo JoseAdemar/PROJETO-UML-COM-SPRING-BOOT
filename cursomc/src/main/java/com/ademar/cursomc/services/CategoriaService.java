@@ -6,9 +6,6 @@ import com.ademar.cursomc.services.exceptions.ObjectNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.NoSuchElementException;
-import java.util.Optional;
-
 @Service
 public class CategoriaService {
 
