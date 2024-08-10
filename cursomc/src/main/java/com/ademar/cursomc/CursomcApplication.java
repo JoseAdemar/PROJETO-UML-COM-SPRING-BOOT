@@ -1,6 +1,7 @@
 package com.ademar.cursomc;
 
 import com.ademar.cursomc.domain.*;
+import com.ademar.cursomc.domain.enums.EstadoPagamento;
 import com.ademar.cursomc.domain.enums.TipoCliente;
 import com.ademar.cursomc.repositories.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,6 +9,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
 
 @SpringBootApplication
@@ -30,6 +32,13 @@ public class CursomcApplication implements CommandLineRunner {
 
     @Autowired
     EnderecoRepository enderecoRepository;
+
+    @Autowired
+    PedidoRepository pedidoRepository;
+
+    @Autowired
+    PagamentoRepository pagamentoRepository;
+
 
     public static void main(String[] args) {
         SpringApplication.run(CursomcApplication.class, args);
@@ -70,11 +79,24 @@ public class CursomcApplication implements CommandLineRunner {
                 "Centro", "38777012", cli1, c2);
         cli1.getEnderecos().addAll(Arrays.asList(e1, e2));
 
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy hh:mm");
+        Pedido pedido1 = new Pedido(null, sdf.parse("30/09/2024 10:32"), cli1, e1);
+        Pedido pedido2 = new Pedido(null, sdf.parse("10/10/2024 19:35"), cli1, e2);
+
+        Pagamento pagamento1 = new PagamentoComCartao(null, EstadoPagamento.QUITADO, pedido1, 6);
+        pedido1.setPagamento(pagamento1);
+        Pagamento pagamento2 = new PagamentoComBoleto(null, EstadoPagamento.PENDENTE, pedido2, sdf.parse("20/10/2024 00:00"),null);
+        pedido2.setPagamento(pagamento2);
+
+        cli1.getPedidos().addAll(Arrays.asList(pedido1, pedido2));
+
         categoriaRepository.saveAll(Arrays.asList(cat1, cat2));
         produtoRepository.saveAll(Arrays.asList(p1, p2, p3));
         estadoRepository.saveAll(Arrays.asList(est1, est2));
         cidadeRepository.saveAll(Arrays.asList(c1, c2, c3));
         clienteRepository.saveAll(Arrays.asList(cli1));
         enderecoRepository.saveAll(Arrays.asList(e1, e2));
+        pedidoRepository.saveAll(Arrays.asList(pedido1, pedido2));
+        pagamentoRepository.saveAll(Arrays.asList(pagamento1, pagamento2));
     }
 }
